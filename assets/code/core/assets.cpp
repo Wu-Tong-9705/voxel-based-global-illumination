@@ -27,12 +27,17 @@ AssetsManager::AssetsManager()
 
 	//创建程序，并附加shader
 	programs["Voxelization"] = make_shared<Program>();
-	programs["Voxelization"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/test.vert");
-	programs["Voxelization"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/test.frag");
+	programs["Voxelization"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/voxelization.vert");
+	programs["Voxelization"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/voxelization.frag");
 	
 	programs["Default"] = make_shared<Program>();
 	programs["Default"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/default.vert");
 	programs["Default"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/default.frag");
+
+	programs["DrawVoxel"] = make_shared<Program>();
+	programs["DrawVoxel"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/drawVoxel.vert");
+	programs["DrawVoxel"]->AttachShader(GL_GEOMETRY_SHADER, "assets/code/shader/drawVoxel.geom");
+	programs["DrawVoxel"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/drawVoxel.frag");
 
 
 	//链接生成所有shader程序

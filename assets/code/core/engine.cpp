@@ -55,6 +55,7 @@ void Engine::Initialize()
 		throw 0;
 	}
 	glfwMakeContextCurrent(window);//将新创建的窗口的上下文设置为当前线程的的主上下文
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 	
 	//获取屏幕位置
 	GLint width, height;
@@ -69,6 +70,7 @@ void Engine::Initialize()
 	{
 		throw 1;
 	}
+
 }
 
 void Engine::SetCallback()

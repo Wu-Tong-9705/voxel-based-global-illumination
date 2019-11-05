@@ -94,9 +94,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\code\shader\test.frag" />
-    <None Include="assets\code\shader\test.vert" />
     <None Include="assets\code\shader\default.frag" />
     <None Include="assets\code\shader\default.vert" />
+    <None Include="assets\code\shader\voxelization.frag" />
+    <None Include="assets\code\shader\voxelization.vert" />
+    <None Include="README.md" />
+    <None Include="assets\code\shader\drawVoxel.vert" />
+    <None Include="assets\code\shader\drawVoxel.geom" />
+    <None Include="assets\code\shader\drawVoxel.frag" />
   </ItemGroup>
 </Project>
