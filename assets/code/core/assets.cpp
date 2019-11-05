@@ -3,6 +3,7 @@
 
 //渲染器类
 #include "../renderer/voxelization.h"
+#include "../renderer/DefferLightRenderer.h"
 
 unique_ptr<AssetsManager>& AssetsManager::Instance()
 {
@@ -24,11 +25,12 @@ AssetsManager::AssetsManager()
 
 	//加载模型
 	models["test"] = make_shared<Model>("assets/model/test/nanosuit.obj");
+	models["sphere"] = make_shared<Model>("assets/model/sphere/sphere.obj");
 
 	//创建程序，并附加shader
 	programs["Voxelization"] = make_shared<Program>();
-	programs["Voxelization"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/voxelization.vert");
-	programs["Voxelization"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/voxelization.frag");
+	programs["Voxelization"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/test.vert");
+	programs["Voxelization"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/test.frag");
 	
 	programs["Default"] = make_shared<Program>();
 	programs["Default"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/default.vert");
@@ -39,7 +41,9 @@ AssetsManager::AssetsManager()
 	programs["DrawVoxel"]->AttachShader(GL_GEOMETRY_SHADER, "assets/code/shader/drawVoxel.geom");
 	programs["DrawVoxel"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/drawVoxel.frag");
 
-
+	programs["lightPass"] = make_shared<Program>();
+	programs["lightPass"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/lightPass.vert");
+	programs["lightPass"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/lightPass.frag");
 	//链接生成所有shader程序
 	for (auto& prog : programs)
 	{
@@ -48,6 +52,7 @@ AssetsManager::AssetsManager()
 
 	//创建渲染器
 	renderers["Voxelization"] = make_shared<VoxelizationRenderer>();
+	//renderers["DefferLight"] = make_shared<DefferLightRender>();
 }
 
 AssetsManager::~AssetsManager()
