@@ -114,5 +114,6 @@
     <None Include="assets\code\shader\lightPass.vert" />
     <None Include="assets\code\shader\whiteLine.vert" />
     <None Include="assets\code\shader\whiteLine.frag" />
+    <None Include="assets\code\shader\voxelization.geom" />
   </ItemGroup>
 </Project>

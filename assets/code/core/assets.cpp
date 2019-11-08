@@ -33,6 +33,7 @@ AssetsManager::AssetsManager()
 
 	programs["Voxelization"] = make_shared<Program>();
 	programs["Voxelization"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/voxelization.vert");
+	programs["Voxelization"]->AttachShader(GL_GEOMETRY_SHADER, "assets/code/shader/voxelization.geom");
 	programs["Voxelization"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/voxelization.frag");
 	
 	programs["WhiteLine"] = make_shared<Program>();

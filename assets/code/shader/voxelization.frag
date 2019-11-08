@@ -3,7 +3,7 @@
 
 out vec4 fragColor;
 in vec3 FragPos;
-in vec2 TexCoords;
+in vec2 TexCoord;
 
 uniform sampler2D texture_diffuse;
 
@@ -54,9 +54,8 @@ void main()
 	int x = int((FragPos.x - boxMin.x)/voxelSize);
 	int y = int((FragPos.y - boxMin.y)/voxelSize);
 	int z = int((FragPos.z - boxMin.z)/voxelSize);
-	vec4 albedo = texture(texture_diffuse, TexCoords);
-	albedo = vec4(albedo.rgb, 1.0f);
-
+	vec4 albedo = texture(texture_diffuse, TexCoord);
+	//albedo = vec4(albedo.rgb, 1.0f);
 
 	imageAtomicRGBA8Avg(texture_albedo, ivec3(x,y,z), albedo);
 }

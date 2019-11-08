@@ -178,6 +178,7 @@
     <None Include="assets\code\shader\lightPass.frag" />
     <None Include="assets\code\shader\lightPass.vert" />
     <None Include="assets\code\shader\voxelization.frag" />
+    <None Include="assets\code\shader\voxelization.geom" />
     <None Include="assets\code\shader\voxelization.vert" />
     <None Include="assets\code\shader\whiteLine.frag" />
     <None Include="assets\code\shader\whiteLine.vert" />

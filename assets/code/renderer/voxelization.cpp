@@ -90,22 +90,32 @@ void VoxelizationRenderer::SetMVP_freeMove(shared_ptr<Program> prog)
 
 void VoxelizationRenderer::SetMVP_ortho(shared_ptr<Program> prog, BoundingBox& boundingBox)
 {
-	//传递projection矩阵
 	auto halfSize = gridSize / 2.0f;
+	
+	//projection矩阵
 	glm::mat4 projectionM = glm::ortho
 		(-halfSize, halfSize, -halfSize, halfSize, 0.0f, gridSize);
-	prog->setMat4("projection", projectionM);
 
-	//传递view矩阵
-	glm::mat4 viewM = glm::lookAt
+	//view矩阵
+	glm::mat4 viewM[3];
+	viewM[0] = glm::lookAt//看向yz平面
 		(boundingBox.Center + glm::vec3(halfSize, 0.0f, 0.0f),
 		 boundingBox.Center,
 		 glm::vec3(0.0f, 1.0f, 0.0f));
-	prog->setMat4("view", viewM);
+	viewM[1] = glm::lookAt//看向xz平面
+		(boundingBox.Center + glm::vec3(0.0f, halfSize, 0.0f),
+		 boundingBox.Center,
+		 glm::vec3(0.0f, 0.0f, -1.0f));
+	viewM[2] = glm::lookAt//看向xy平面
+		(boundingBox.Center + glm::vec3(0.0f, 0.0f, halfSize),
+		 boundingBox.Center,
+		 glm::vec3(0.0f, 1.0f, 0.0f));
 
-	//传递model矩阵
-	glm::mat4 modelM = glm::mat4(1.0f);
-	prog->setMat4("model", modelM);
+
+	prog->setMat4("viewProject[0]", projectionM * viewM[0]);
+	prog->setMat4("viewProject[1]", projectionM * viewM[1]);
+	prog->setMat4("viewProject[2]", projectionM * viewM[2]);
+
 }
 
 void VoxelizationRenderer::Set3DTexture()
@@ -158,7 +168,7 @@ void VoxelizationRenderer::DrawVoxel()
 	//设置MVP：相机自由移动
 	SetMVP_freeMove(prog);
 
-	//走过场。其实全由几何着色器绘制
+	//走过场,只是为了传输顶点索引，其实全由几何着色器绘制
 	glBindVertexArray(VAO_drawVoxel);
 	glDrawArrays(GL_POINTS, 0, dimension * dimension * dimension);
 	glBindVertexArray(0);
