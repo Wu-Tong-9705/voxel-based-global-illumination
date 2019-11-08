@@ -14,16 +14,16 @@ public:
 
 	string matName;
 
-	float roughness;
-	float IOR;
-	float metalness;
+	GLfloat roughness;
+	GLfloat IOR;
+	GLfloat metalness;
 	glm::vec3 F0;
 	glm::vec3 albedo;
 	
-	unsigned int normalMap;
-	unsigned int roughnessMap;
-	unsigned int metalnessMap;
-	unsigned int albedoMap;
+	GLuint normalMap;
+	GLuint roughnessMap;
+	GLuint metalnessMap;
+	GLuint albedoMap;
 
 
 	void loadMaterial(string path);
@@ -33,6 +33,6 @@ public:
 private:
 	string modelPath;
 	void loadTexture(en_textureType type);
-	unsigned int bindTexture(en_textureType type,string path);
+	GLuint bindTexture(en_textureType type,string path);
 };
 

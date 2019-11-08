@@ -27,13 +27,6 @@ using namespace std;
 
 
 //自定义结构
-struct Texture
-{
-	GLuint ID;
-	string Type;
-	string Path;
-};
-
 struct Vertex
 {
 	glm::vec3 Position;//位置

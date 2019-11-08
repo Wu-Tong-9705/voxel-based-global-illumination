@@ -2,21 +2,29 @@
 #include "mesh.h"
 #include "material.h"
 
-Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, shared_ptr<Material> material)
+Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, shared_ptr<Material> material, bool hasTangentsAndBitangents)
 {
 	this->vertices = vertices;
 	this->indices = indices;
 	this->material = material;
-
+	this->HasTangentsAndBitangents = hasTangentsAndBitangents;
 	setupMesh();//设置网格
 }
 
-int Mesh::Draw()
+GLint Mesh::Draw()
 {
-	//绘制mesh
 	glBindVertexArray(VAO);
 	return indices.size();	
 }
+
+void Mesh::Draw(Program& shader)
+{
+	//绘制mesh
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+}
+
 
 Mesh::~Mesh()
 {
@@ -41,12 +49,16 @@ void Mesh::setupMesh()
 	//设置顶点着色器如何获取纹理坐标数据
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
-	//设置顶点着色器如何获取切线数据
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
-	//设置顶点着色器如何获取副切线数据
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+	
+	if (HasTangentsAndBitangents)
+	{
+		//设置顶点着色器如何获取切线数据
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+		//设置顶点着色器如何获取副切线数据
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+	}
 
 	//把索引数据传送到EBO中
 	glGenBuffers(1, &EBO);

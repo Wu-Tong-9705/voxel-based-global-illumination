@@ -5,6 +5,8 @@
 class Model
 {
 public:
+	vector<shared_ptr<Material>> materials;//所有材质（包含贴图）数据
+	vector<shared_ptr<Mesh>> meshes;//所有网格（顶点、索引、材质指针）数据
 	BoundingBox boundingBox;//包围盒
 
 	//传入模型文件路径，载入模型
@@ -12,9 +14,9 @@ public:
 
 	//绘制包围盒
 	void DrawBoundingBox();
-	
-	vector<shared_ptr<Material>> materials;//所有材质（纹理指针）数据
-	vector<shared_ptr<Mesh>> meshes;//所有网格（顶点、索引、材质指针）数据
+
+	//绘制（测试用）
+	void Draw(Program& shader);
 
 	~Model();
 
@@ -30,8 +32,10 @@ private:
 	//载入网格
 	void loadMeshes();
 
+	//载入材质
+	shared_ptr<Material> loadMaterial(string materialName);
+
 	//设置包围盒
 	void SetupBoundingBox();
-	
 };
 

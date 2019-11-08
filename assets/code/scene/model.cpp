@@ -37,7 +37,6 @@ void Model::loadModel(string const& path)
 	scene = nullptr;
 }
 
-
 void Model::loadMeshes()
 {
 	for (GLuint i = 0; i < scene->mNumMeshes; i++)
@@ -45,7 +44,9 @@ void Model::loadMeshes()
 		aiMesh* mesh = scene->mMeshes[i];
 		vector<Vertex> vertices;
 		vector<GLuint> indices;
-		shared_ptr<Material> material = make_shared<Material>() ;
+
+		bool HasTangentsAndBitangents = mesh->HasTangentsAndBitangents();
+
 		string meshFileName = string(mesh->mName.C_Str());
 		string meshName = meshFileName.substr(0, meshFileName.find_last_of('_'));
 		string materialName = meshFileName.substr(meshName.length() + 1, meshFileName.length() - meshFileName.find_last_of('_') - 1);
@@ -80,7 +81,9 @@ void Model::loadMeshes()
 			{
 				vertex.TexCoords = glm::vec2(0.0f, 0.0f);
 			}
-			if (mesh->HasTangentsAndBitangents()) {
+
+			//获取切线
+			if (HasTangentsAndBitangents) {
 				//获取切线
 				vector.x = mesh->mTangents[i].x;
 				vector.y = mesh->mTangents[i].y;
@@ -93,6 +96,7 @@ void Model::loadMeshes()
 				vector.z = mesh->mBitangents[i].z;
 				vertex.Bitangent = vector;
 			}
+
 			//该顶点载入完毕
 			vertices.push_back(vertex);
 
@@ -112,22 +116,36 @@ void Model::loadMeshes()
 		}
 
 		//加载材质
-		material->loadMaterial(directory + "/" + materialName + ".pbr");
-
-		materials.push_back(material);
+		shared_ptr<Material> material = loadMaterial(materialName);
 
 		//该网格载入完毕
-		meshes.push_back(make_shared<Mesh>(vertices, indices, material));
+		meshes.push_back(make_shared<Mesh>(vertices, indices, material, HasTangentsAndBitangents));
 	}
 }
 
-
+shared_ptr<Material> Model::loadMaterial(string materialName)
+{
+	for (unsigned int j = 0; j < materials.size(); j++)
+	{
+		//该材质已经载入
+		if (materials[j]->matName == materialName)
+		{
+			return materials[j];
+		}
+	}
+	
+	//该材质未载入
+	shared_ptr<Material> material = make_shared<Material>();
+	material->loadMaterial(directory + "/" + materialName + ".pbr");
+	materials.push_back(material);
+	return material;
+}
 
 void Model::SetupBoundingBox()
 {
 	//计算包围盒的中点和尺寸
 	boundingBox.Center = (boundingBox.MinPoint + boundingBox.MaxPoint) * 0.5f;
-	boundingBox.Size = boundingBox.MaxPoint- boundingBox.MinPoint;
+	boundingBox.Size = boundingBox.MaxPoint - boundingBox.MinPoint;
 
 	//设置VAO
 	GLfloat vertices[] =
@@ -177,4 +195,12 @@ void Model::SetupBoundingBox()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+}
+
+void Model::Draw(Program& shader)
+{
+	for (unsigned int i = 0; i < meshes.size(); i++)
+	{
+		meshes[i]->Draw(shader);
+	}
 }

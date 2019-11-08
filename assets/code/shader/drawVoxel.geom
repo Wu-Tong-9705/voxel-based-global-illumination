@@ -84,7 +84,7 @@ void main()
 	//一个位置变成八个点
 	for(int i = 0; i < 8; i++)
 	{
-		vec4 vertex = (gl_in[0].gl_Position + cubeVertices[i]) *voxelSize;
+		vec4 vertex = gl_in[0].gl_Position + cubeVertices[i];
 		projectedVertices[i] = projection * view * model * vertex;
 	}
 

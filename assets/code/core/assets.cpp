@@ -24,17 +24,20 @@ AssetsManager::AssetsManager()
 	cameras["FPS"]->SetAsActive();//激活
 
 	//加载模型
-	models["test"] = make_shared<Model>("assets/model/test/nanosuit.obj");
 	models["sphere"] = make_shared<Model>("assets/model/sphere/sphere.obj");
 
 	//创建程序，并附加shader
-	programs["Voxelization"] = make_shared<Program>();
-	programs["Voxelization"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/test.vert");
-	programs["Voxelization"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/test.frag");
-	
 	programs["Default"] = make_shared<Program>();
 	programs["Default"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/default.vert");
 	programs["Default"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/default.frag");
+
+	programs["Voxelization"] = make_shared<Program>();
+	programs["Voxelization"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/voxelization.vert");
+	programs["Voxelization"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/voxelization.frag");
+	
+	programs["WhiteLine"] = make_shared<Program>();
+	programs["WhiteLine"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/whiteLine.vert");
+	programs["WhiteLine"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/whiteLine.frag");
 
 	programs["DrawVoxel"] = make_shared<Program>();
 	programs["DrawVoxel"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/drawVoxel.vert");
@@ -44,6 +47,8 @@ AssetsManager::AssetsManager()
 	programs["lightPass"] = make_shared<Program>();
 	programs["lightPass"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/lightPass.vert");
 	programs["lightPass"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/lightPass.frag");
+	
+	
 	//链接生成所有shader程序
 	for (auto& prog : programs)
 	{

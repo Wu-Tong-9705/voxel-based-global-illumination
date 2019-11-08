@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClCompile Include="assets\code\core\assets.cpp" />
     <ClCompile Include="assets\code\core\engine.cpp" />
+    <ClCompile Include="assets\code\renderer\DefferLightRenderer.cpp" />
     <ClCompile Include="assets\code\renderer\renderer.cpp" />
     <ClCompile Include="assets\code\shader\program.cpp" />
     <ClCompile Include="assets\code\support\glad.c">
@@ -154,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="assets\code\core\assets.h" />
     <ClInclude Include="assets\code\core\engine.h" />
+    <ClInclude Include="assets\code\renderer\DefferLightRenderer.h" />
     <ClInclude Include="assets\code\renderer\renderer.h" />
     <ClInclude Include="assets\code\shader\program.h" />
     <ClInclude Include="assets\code\support\single_active.h" />
@@ -171,8 +173,14 @@
     <None Include="assets\code\shader\drawVoxel.frag" />
     <None Include="assets\code\shader\drawVoxel.geom" />
     <None Include="assets\code\shader\drawVoxel.vert" />
+    <None Include="assets\code\shader\GPass.frag" />
+    <None Include="assets\code\shader\GPass.vert" />
+    <None Include="assets\code\shader\lightPass.frag" />
+    <None Include="assets\code\shader\lightPass.vert" />
     <None Include="assets\code\shader\voxelization.frag" />
     <None Include="assets\code\shader\voxelization.vert" />
+    <None Include="assets\code\shader\whiteLine.frag" />
+    <None Include="assets\code\shader\whiteLine.vert" />
     <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

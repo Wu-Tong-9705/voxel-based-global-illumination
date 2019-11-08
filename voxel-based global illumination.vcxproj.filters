@@ -54,6 +54,9 @@
     <ClCompile Include="assets\code\core\assets.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="assets\code\renderer\DefferLightRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assets\code\scene\material.h">
@@ -92,6 +95,9 @@
     <ClInclude Include="assets\code\renderer\voxelization.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="assets\code\renderer\DefferLightRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\code\shader\default.frag" />
@@ -102,5 +108,11 @@
     <None Include="assets\code\shader\drawVoxel.vert" />
     <None Include="assets\code\shader\drawVoxel.geom" />
     <None Include="assets\code\shader\drawVoxel.frag" />
+    <None Include="assets\code\shader\GPass.frag" />
+    <None Include="assets\code\shader\GPass.vert" />
+    <None Include="assets\code\shader\lightPass.frag" />
+    <None Include="assets\code\shader\lightPass.vert" />
+    <None Include="assets\code\shader\whiteLine.vert" />
+    <None Include="assets\code\shader\whiteLine.frag" />
   </ItemGroup>
 </Project>

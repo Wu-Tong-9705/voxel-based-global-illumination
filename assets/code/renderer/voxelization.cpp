@@ -7,7 +7,7 @@ void VoxelizationRenderer::Render()
 
 
 	//计算体素网格和单位体素尺寸
-	auto& model = AssetsManager::Instance()->models["test"];
+	auto& model = AssetsManager::Instance()->models["sphere"];
 	auto& boundingBox = model->boundingBox;
 	gridSize = glm::max(boundingBox.Size.x, glm::max(boundingBox.Size.y, boundingBox.Size.z));
 	voxelSize = gridSize / dimension;
@@ -36,12 +36,16 @@ void VoxelizationRenderer::Render()
 
 
 	//绘制模型
-	model->Draw();
+	model->Draw(*prog);
 
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
 	
 	//绘制体素
 	DrawVoxel();
+
+
+
+
 }
 
 void VoxelizationRenderer::SetMaterialUniforms(Material& material)
@@ -51,27 +55,16 @@ void VoxelizationRenderer::SetMaterialUniforms(Material& material)
 	//绑定漫反射纹理
 	glActiveTexture(GL_TEXTURE0);
 	glUniform1i(glGetUniformLocation(prog->getID(), "texture_diffuse"), 0);
-	glBindTexture(GL_TEXTURE_2D, material.diffuseMaps[0]->ID);
-
+	glBindTexture(GL_TEXTURE_2D, material.albedoMap);
 
 }
 
 VoxelizationRenderer::VoxelizationRenderer()
 {
 	gridSize = 0;//网格尺寸（=视景体最长边）
-	dimension = 256;//一排体素的数量
+	dimension = 128;//一排体素的数量
 	voxelSize = 0;//单位体素尺寸
 	glGenVertexArrays(1, &VAO_drawVoxel);
-
-	glBindVertexArray(VAO_drawVoxel);
-	//GLuint VBO;
-	//glGenBuffers(1, &VBO);
-	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//GLfloat vertices[256];
-	//glBufferData(GL_ARRAY_BUFFER, 256, vertices, GL_STATIC_DRAW);
-	//glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glEnableVertexAttribArray(0);
 	Set3DTexture();
 }
 
@@ -89,7 +82,7 @@ void VoxelizationRenderer::SetMVP_freeMove(shared_ptr<Program> prog)
 
 	//传递model矩阵
 	glm::mat4 modelM = glm::mat4(1.0f);
-	auto& boundingBox = AssetsManager::Instance()->models["test"]->boundingBox;
+	auto& boundingBox = AssetsManager::Instance()->models["sphere"]->boundingBox;
 	modelM = glm::translate(modelM, boundingBox.MinPoint);
 	modelM = glm::scale(modelM, glm::vec3(voxelSize));
 	prog->setMat4("model", modelM);
@@ -105,8 +98,8 @@ void VoxelizationRenderer::SetMVP_ortho(shared_ptr<Program> prog, BoundingBox& b
 
 	//传递view矩阵
 	glm::mat4 viewM = glm::lookAt
-		(glm::vec3(boundingBox.Center.x, boundingBox.Center.y, boundingBox.MaxPoint.z + 0.2f),
-		 glm::vec3(boundingBox.Center.x, boundingBox.Center.y, boundingBox.MaxPoint.z + 0.2f) + glm::vec3(0.0f, 0.0f, -1.0f),
+		(boundingBox.Center + glm::vec3(halfSize, 0.0f, 0.0f),
+		 boundingBox.Center,
 		 glm::vec3(0.0f, 1.0f, 0.0f));
 	prog->setMat4("view", viewM);
 
@@ -156,7 +149,7 @@ void VoxelizationRenderer::DrawVoxel()
 
 	prog->setUnsignedInt("dimension", dimension);
 	prog->setFloat("voxelSize", voxelSize);
-	auto& boundingBox = AssetsManager::Instance()->models["test"]->boundingBox;
+	auto& boundingBox = AssetsManager::Instance()->models["sphere"]->boundingBox;
 	prog->setVec3("boxMin", boundingBox.MinPoint);
 
 	//绑定纹理
@@ -169,4 +162,11 @@ void VoxelizationRenderer::DrawVoxel()
 	glBindVertexArray(VAO_drawVoxel);
 	glDrawArrays(GL_POINTS, 0, dimension * dimension * dimension);
 	glBindVertexArray(0);
+
+	//绘制包围盒
+	glDisable(GL_CULL_FACE);
+	auto& prog2 = AssetsManager::Instance()->programs["WhiteLine"];
+	prog2->Use();
+	SetMVP_freeMove(prog2);
+	AssetsManager::Instance()->models["sphere"]->DrawBoundingBox();
 }
