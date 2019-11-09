@@ -1,14 +1,15 @@
 #version 450 core
-#extension GL_ARB_explicit_uniform_location : enable
 
-out vec4 fragColor;
 in vec3 FragPos;
 in vec2 TexCoord;
+in vec3 ClipPos;
+in vec4 BoundingBox;
 
-uniform sampler2D texture_diffuse;
+out vec4 fragColor;
 
 layout(binding = 0, r32ui)  uniform volatile coherent uimage3D texture_albedo;
 
+uniform sampler2D texture_diffuse;
 uniform float voxelSize;
 uniform vec3 boxMin;
 
@@ -37,7 +38,8 @@ void imageAtomicRGBA8Avg(layout(r32ui) volatile coherent uimage3D grid, ivec3 co
 	uint prevStoredVal = 0;
 	uint curStoredVal;
 
-
+	//若未存值，则存值，进入不了循环
+	//若已有值，则不存值，并进入循环；两个值在循环中按照alpha值混合后，存值，离开循环
 	while((curStoredVal = imageAtomicCompSwap(grid, coords, prevStoredVal, newVal)) != prevStoredVal)
 	{
 		prevStoredVal = curStoredVal;
@@ -51,6 +53,13 @@ void imageAtomicRGBA8Avg(layout(r32ui) volatile coherent uimage3D grid, ivec3 co
 
 void main()
 {   
+	//剔除因保守光栅化产生的多余体素
+	if( ClipPos.x < BoundingBox.x || ClipPos.y < BoundingBox.y || 
+		ClipPos.x > BoundingBox.z || ClipPos.y > BoundingBox.w )
+	{
+		discard;
+	}
+
 	int x = int((FragPos.x - boxMin.x)/voxelSize);
 	int y = int((FragPos.y - boxMin.y)/voxelSize);
 	int z = int((FragPos.z - boxMin.z)/voxelSize);

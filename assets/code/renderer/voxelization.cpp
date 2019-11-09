@@ -7,7 +7,7 @@ void VoxelizationRenderer::Render()
 
 
 	//计算体素网格和单位体素尺寸
-	auto& model = AssetsManager::Instance()->models["sphere"];
+	auto& model = AssetsManager::Instance()->models["test"];
 	auto& boundingBox = model->boundingBox;
 	gridSize = glm::max(boundingBox.Size.x, glm::max(boundingBox.Size.y, boundingBox.Size.z));
 	voxelSize = gridSize / dimension;
@@ -25,6 +25,7 @@ void VoxelizationRenderer::Render()
 	prog->Use();
 	prog->setFloat("voxelSize", voxelSize);
 	prog->setVec3("boxMin", boundingBox.MinPoint);
+	prog->setUnsignedInt("dimension", dimension);
 
 	//设置MVP：以包围盒某个面为投影面进行正交投影
 	SetMVP_ortho(prog, boundingBox);
@@ -82,7 +83,7 @@ void VoxelizationRenderer::SetMVP_freeMove(shared_ptr<Program> prog)
 
 	//传递model矩阵
 	glm::mat4 modelM = glm::mat4(1.0f);
-	auto& boundingBox = AssetsManager::Instance()->models["sphere"]->boundingBox;
+	auto& boundingBox = AssetsManager::Instance()->models["test"]->boundingBox;
 	modelM = glm::translate(modelM, boundingBox.MinPoint);
 	modelM = glm::scale(modelM, glm::vec3(voxelSize));
 	prog->setMat4("model", modelM);
@@ -115,6 +116,9 @@ void VoxelizationRenderer::SetMVP_ortho(shared_ptr<Program> prog, BoundingBox& b
 	prog->setMat4("viewProject[0]", projectionM * viewM[0]);
 	prog->setMat4("viewProject[1]", projectionM * viewM[1]);
 	prog->setMat4("viewProject[2]", projectionM * viewM[2]);
+	prog->setMat4("viewProjectI[0]", inverse(projectionM * viewM[0]));
+	prog->setMat4("viewProjectI[1]", inverse(projectionM * viewM[1]));
+	prog->setMat4("viewProjectI[2]", inverse(projectionM * viewM[2]));
 
 }
 
@@ -159,7 +163,7 @@ void VoxelizationRenderer::DrawVoxel()
 
 	prog->setUnsignedInt("dimension", dimension);
 	prog->setFloat("voxelSize", voxelSize);
-	auto& boundingBox = AssetsManager::Instance()->models["sphere"]->boundingBox;
+	auto& boundingBox = AssetsManager::Instance()->models["test"]->boundingBox;
 	prog->setVec3("boxMin", boundingBox.MinPoint);
 
 	//绑定纹理
@@ -178,5 +182,5 @@ void VoxelizationRenderer::DrawVoxel()
 	auto& prog2 = AssetsManager::Instance()->programs["WhiteLine"];
 	prog2->Use();
 	SetMVP_freeMove(prog2);
-	AssetsManager::Instance()->models["sphere"]->DrawBoundingBox();
+	AssetsManager::Instance()->models["test"]->DrawBoundingBox();
 }

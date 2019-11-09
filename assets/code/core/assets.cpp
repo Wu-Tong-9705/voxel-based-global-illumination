@@ -25,6 +25,7 @@ AssetsManager::AssetsManager()
 
 	//加载模型
 	models["sphere"] = make_shared<Model>("assets/model/sphere/sphere.obj");
+	models["test"] = make_shared<Model>("assets/model/test/nanosuit.obj");
 
 	//创建程序，并附加shader
 	programs["Default"] = make_shared<Program>();
