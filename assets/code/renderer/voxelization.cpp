@@ -33,7 +33,11 @@ void VoxelizationRenderer::Render()
 	//清空并绑定纹理
 	static GLfloat zero[] = { 0, 0, 0, 0 };
 	glClearTexImage(albedo, 0, GL_RGBA, GL_FLOAT, zero);
+	glClearTexImage(normal, 0, GL_RGBA, GL_FLOAT, zero);
+	glClearTexImage(IOR, 0, GL_RGBA, GL_FLOAT, zero);
 	glBindImageTexture(0, albedo, 0, GL_TRUE, 0, GL_READ_WRITE, GL_R32UI);
+	glBindImageTexture(1, normal, 0, GL_TRUE, 0, GL_READ_WRITE, GL_R32UI);
+	glBindImageTexture(2, IOR, 0, GL_TRUE, 0, GL_READ_WRITE, GL_R32UI);
 
 
 	//绘制模型
@@ -42,7 +46,7 @@ void VoxelizationRenderer::Render()
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
 	
 	//绘制体素
-	DrawVoxel();
+	DrawVoxel(DrawMode::IOR);
 
 
 
@@ -63,7 +67,7 @@ void VoxelizationRenderer::SetMaterialUniforms(Material& material)
 VoxelizationRenderer::VoxelizationRenderer()
 {
 	gridSize = 0;//网格尺寸（=视景体最长边）
-	dimension = 128;//一排体素的数量
+	dimension = 256;//一排体素的数量
 	voxelSize = 0;//单位体素尺寸
 	glGenVertexArrays(1, &VAO_drawVoxel);
 	Set3DTexture();
@@ -127,8 +131,30 @@ void VoxelizationRenderer::Set3DTexture()
 	//创建albedo 3D纹理
 	glGenTextures(1, &albedo);
 	glBindTexture(GL_TEXTURE_3D, albedo);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8,
+		dimension, dimension, dimension,
+		0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);	
+	
+	//创建normal 3D纹理
+	glGenTextures(1, &normal);
+	glBindTexture(GL_TEXTURE_3D, normal);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8,
+		dimension, dimension, dimension,
+		0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
-	//设置纹理数据
+	//创建IOR 3D纹理
+	glGenTextures(1, &IOR);
+	glBindTexture(GL_TEXTURE_3D, IOR);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -142,7 +168,7 @@ void VoxelizationRenderer::Set3DTexture()
 }
 
 
-void VoxelizationRenderer::DrawVoxel()
+void VoxelizationRenderer::DrawVoxel(DrawMode mode)
 {
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);//开启通道写入
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);//设置清屏颜色
@@ -167,7 +193,20 @@ void VoxelizationRenderer::DrawVoxel()
 	prog->setVec3("boxMin", boundingBox.MinPoint);
 
 	//绑定纹理
-	glBindImageTexture(0, albedo, 0, GL_TRUE, 0, GL_READ_ONLY, GL_RGBA8);
+	switch (mode)
+	{
+	case DrawMode::ALBEDO:
+		glBindImageTexture(0, albedo, 0, GL_TRUE, 0, GL_READ_ONLY, GL_RGBA8);
+		break;
+
+	case DrawMode::NORMAL:
+		glBindImageTexture(0, normal, 0, GL_TRUE, 0, GL_READ_ONLY, GL_RGBA8);
+		break;
+
+	case DrawMode::IOR:
+		glBindImageTexture(0, IOR, 0, GL_TRUE, 0, GL_READ_ONLY, GL_RGBA8);
+		break;
+	}
 
 	//设置MVP：相机自由移动
 	SetMVP_freeMove(prog);

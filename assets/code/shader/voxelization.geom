@@ -5,14 +5,20 @@ layout (triangle_strip, max_vertices = 3) out;
 in Vertex
 {
 	vec2 texCoord;
-	//vec3 normal;
+	vec3 normal;
 } In[3];
 
+out GeometryOut
+{
+	vec3 FragPos;//世界坐标
+	vec2 TexCoord;//纹理坐标
+	vec3 Normal;//法线坐标
 
-out vec3 FragPos;
-out vec2 TexCoord;
-out vec3 ClipPos;
-out vec4 BoundingBox;
+
+	vec3 ClipPos;//裁剪空间坐标
+	flat vec4 BoundingBox;//三角形面片包围盒
+} Out;
+
 
 uniform mat4 viewProject[3];
 uniform mat4 viewProjectI[3];
@@ -110,7 +116,7 @@ void main() {
 	planes[2].z -= dot(halfPixel, abs(planes[2].xy));
 
 	//计算包围盒
-	BoundingBox = AxisAlignedBoundingBox(clipPos, halfPixel);
+	Out.BoundingBox = AxisAlignedBoundingBox(clipPos, halfPixel);
 
 	//三个齐次平面的两两交线
 	vec3 intersection[3];
@@ -136,11 +142,13 @@ void main() {
 	{
 		//逆投影变换，计算新顶点的世界坐标
 		vec4 voxelPos = viewProjectionI * clipPos[i];
-		FragPos = voxelPos.xyz;
+		Out.FragPos = voxelPos.xyz;
 
 		gl_Position = clipPos[i];
-		ClipPos = clipPos[i].xyz;
-		TexCoord = In[i].texCoord;
+		Out.ClipPos = clipPos[i].xyz;
+		Out.TexCoord = In[i].texCoord;
+		Out.Normal = In[i].normal;
+
 		EmitVertex();
 	}
 
