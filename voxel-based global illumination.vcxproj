@@ -157,6 +157,7 @@
     <ClInclude Include="assets\code\core\engine.h" />
     <ClInclude Include="assets\code\renderer\DefferLightRenderer.h" />
     <ClInclude Include="assets\code\renderer\renderer.h" />
+    <ClInclude Include="assets\code\shader\anisoMipmapFirst.comp" />
     <ClInclude Include="assets\code\shader\program.h" />
     <ClInclude Include="assets\code\support\single_active.h" />
     <ClInclude Include="assets\code\support\stb_image.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="assets\code\renderer\voxelization.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\code\shader\anisoMipmapOthers.comp" />
     <None Include="assets\code\shader\default.frag" />
     <None Include="assets\code\shader\default.vert" />
     <None Include="assets\code\shader\drawVoxel.frag" />

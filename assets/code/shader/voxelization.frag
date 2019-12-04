@@ -43,7 +43,9 @@ uint convVec4ToRGBA8(vec4 val)
 //float-->32uint
 uint convFloatToRGBA8(float val)
 {
-	return (uint(val) & 0x000000FF) << 24U | (uint((val - uint(val)) * 10000) & 0x0000FFFF << 8U | 00000001);
+	return 0xFF000000|//alpha值恒为255
+	(uint((val - uint(val)) * 10000) & 0x0000FFFF << 8U |//16位存小数（最多5位数）
+	(uint(val) & 0x000000FF));//8位存整数（0-255）
 
 }
 
@@ -69,8 +71,10 @@ void imageAtomicRGBA8Avg(layout(r32ui) volatile coherent uimage3D grid, ivec3 co
 
 void imageAtomicFloat(layout(r32ui) volatile coherent uimage3D grid, ivec3 coords, float value)
 {
+	uint zero = 0;
+	//uint newVal = 0xFF190001;
 	uint newVal = convFloatToRGBA8(value);
-	imageAtomicCompSwap(grid, coords, 0, newVal);
+	imageAtomicCompSwap(grid, coords, zero, newVal);
 }
 
 vec3 EncodeNormal(vec3 normal)
