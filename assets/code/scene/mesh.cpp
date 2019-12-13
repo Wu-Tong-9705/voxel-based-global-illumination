@@ -21,6 +21,7 @@ void Mesh::Draw(Program& shader)
 {
 	//»æÖÆmesh
 	glBindVertexArray(VAO);
+	shader.setFloat("IOR", material->IOR);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }

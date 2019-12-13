@@ -6,10 +6,11 @@ layout(location = 2) in vec2 vertexTexCoord;
 out Vertex
 {
 	vec2 texCoord;
-	//vec3 normal;
+	vec3 normal;
 };
 
 void main(){
 	gl_Position = vec4(vertexPosition, 1.0f);
 	texCoord = vertexTexCoord;
+	normal = vertexNormal;
 }

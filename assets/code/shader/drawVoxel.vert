@@ -1,7 +1,7 @@
 #version 450 core
 
 out vec4 albedo;
-layout(binding = 0, rgba8) uniform readonly image3D texture_albedo;
+layout(binding = 0, rgba8) uniform readonly image3D Voxel;
 
 uniform uint dimension;
 
@@ -16,7 +16,7 @@ void main()
 	);
 
 	ivec3 texPos = ivec3(position);
-	albedo = imageLoad(texture_albedo, texPos);
+	albedo = imageLoad(Voxel, texPos);
 
 
 	gl_Position = vec4(position, 1.0f);

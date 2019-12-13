@@ -98,6 +98,9 @@
     <ClInclude Include="assets\code\renderer\DefferLightRenderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="assets\code\shader\anisoMipmapFirst.comp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\code\shader\default.frag" />
@@ -115,5 +118,6 @@
     <None Include="assets\code\shader\whiteLine.vert" />
     <None Include="assets\code\shader\whiteLine.frag" />
     <None Include="assets\code\shader\voxelization.geom" />
+    <None Include="assets\code\shader\anisoMipmapOthers.comp" />
   </ItemGroup>
 </Project>

@@ -37,6 +37,12 @@ AssetsManager::AssetsManager()
 	programs["Voxelization"]->AttachShader(GL_GEOMETRY_SHADER, "assets/code/shader/voxelization.geom");
 	programs["Voxelization"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/voxelization.frag");
 	
+	programs["anisoMipmapFirst"] = make_shared<Program>();
+	programs["anisoMipmapFirst"]->AttachShader(GL_COMPUTE_SHADER, "assets/code/shader/anisoMipmapFirst.comp");
+	
+	programs["anisoMipmapOthers"] = make_shared<Program>();
+	programs["anisoMipmapOthers"]->AttachShader(GL_COMPUTE_SHADER, "assets/code/shader/anisoMipmapOthers.comp");
+
 	programs["WhiteLine"] = make_shared<Program>();
 	programs["WhiteLine"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/whiteLine.vert");
 	programs["WhiteLine"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/whiteLine.frag");
@@ -49,6 +55,7 @@ AssetsManager::AssetsManager()
 	programs["lightPass"] = make_shared<Program>();
 	programs["lightPass"]->AttachShader(GL_VERTEX_SHADER, "assets/code/shader/lightPass.vert");
 	programs["lightPass"]->AttachShader(GL_FRAGMENT_SHADER, "assets/code/shader/lightPass.frag");
+
 	
 	
 	//链接生成所有shader程序
